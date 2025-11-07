@@ -1,0 +1,31 @@
+
+services:
+  app:
+    build: .
+    container_name: php-crud-app
+    ports:
+      - "8084:80"
+    volumes:
+      - ./:/var/www/html
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: php-crud-db
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    # Para provedores externos (Neon, etc), ignore este serviço e ajuste .env para apontar para o host externo
+
+volumes:
+  pgdata:
